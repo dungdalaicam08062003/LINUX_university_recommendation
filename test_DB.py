@@ -4,7 +4,7 @@ import psycopg2
 conn = psycopg2.connect(
     dbname="university_db",
     user="dung",
-    password="StrongPassword123!",
+    password="matkhau_manh",
     host="localhost",
     port="5432"
 )
