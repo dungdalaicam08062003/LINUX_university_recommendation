@@ -1,4 +1,4 @@
-import routes.university as u1
+import Communicate_Database.university as u1
 
 if __name__ == "__main__":
     university_info = u1.get_university_info()
