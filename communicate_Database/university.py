@@ -12,7 +12,7 @@ def get_university_info():
         cur.execute(sql)
         rows = cur.fetchall()
         if rows:
-            university_info = university_model.university_data(
+            university_info = university_model.university(
                 ID_university=rows[0][0],
                 new_data_description=rows[0][1],
                 url_info=rows[0][2]
