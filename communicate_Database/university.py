@@ -1,5 +1,5 @@
 import models.university as university_model
-import Communicate_Database.connectDB as db
+import connectDB as db
 def get_university_info():
     # Tạo đối tượng university_data
     conn = db.open_connection()
