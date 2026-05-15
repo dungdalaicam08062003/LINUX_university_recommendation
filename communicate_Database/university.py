@@ -2,7 +2,6 @@ import models.university as university
 import models.university_data as university_data
 import communicate_Database.connectDB as db
 def get_university_info():
-    # Tạo đối tượng university_data
     conn = db.open_connection()
     if not conn:
         return {"error": "Failed to connect to database"}
@@ -13,12 +12,17 @@ def get_university_info():
         cur.execute(sql)
         rows = cur.fetchall()
         if rows:
-            university_info = university.university(
-                name=rows[0][0],
-                location=rows[0][1],
-                url=rows[0][2]
-            )
-            return university_info.to_dict()
+            universities = []
+            for row in rows:
+                # giả sử bảng university có cột: id, name, location, url
+                uni = university.university(
+                    id=row[0],
+                    name=row[1],
+                    location=row[2],
+                    url=row[3]
+                )
+                universities.append(uni.to_dict())
+            return universities
         else:
             return {"error": "University not found"}
     except Exception as e:
@@ -27,6 +31,7 @@ def get_university_info():
     finally:
         if conn:
             conn.close()
+
 def get_list_industry_info_university(university_id):
     conn = db.open_connection()
     if not conn:
