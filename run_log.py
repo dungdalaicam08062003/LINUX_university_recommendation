@@ -7,17 +7,22 @@ from routes import university
 
 app = Flask(__name__)
 
-# Load allowed origins from appsetting.json
+# Load allowed origins từ appsetting.json
 with open("appsetting.json") as f:
     config = json.load(f)
 
 CORS(app, origins=config["AllowedOrigins"])
 
-
-
-# Cấu hình logging ra file
+# --- Cấu hình logging ---
+# Ghi file
 logging.basicConfig(filename="access.log", level=logging.INFO,
                     format="%(asctime)s %(levelname)s %(message)s")
+
+# In ra console
+console_handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+console_handler.setFormatter(formatter)
+logging.getLogger().addHandler(console_handler)
 
 @app.before_request
 def log_request_info():
@@ -29,21 +34,19 @@ def log_response_info(response):
     logging.info(f"Response status: {response.status}")
     return response
 
-
+# --- Gửi log sang node khác ---
 class HttpLogHandler(logging.Handler):
     def emit(self, record):
         log_entry = self.format(record)
         try:
-            requests.post("http://192.168.207.133:5000/logs", json={"log": log_entry}, timeout=2)
+            requests.post("http://192.168.207.133:5000/logs",
+                          json={"log": log_entry}, timeout=2)
         except Exception as e:
             print("Failed to send log:", e)
 
-handler = HttpLogHandler()
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-handler.setFormatter(formatter)
-
-app.logger.addHandler(handler)
-app.logger.setLevel(logging.INFO)
+http_handler = HttpLogHandler()
+http_handler.setFormatter(formatter)
+logging.getLogger().addHandler(http_handler)
 
 # Register blueprints
 app.register_blueprint(university.bp)
