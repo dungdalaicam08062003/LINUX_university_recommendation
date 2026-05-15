@@ -34,7 +34,7 @@ class HttpLogHandler(logging.Handler):
     def emit(self, record):
         log_entry = self.format(record)
         try:
-            requests.post("http://192.168.207.133/logs", json={"log": log_entry}, timeout=2)
+            requests.post("http://192.168.207.133:5000/logs", json={"log": log_entry}, timeout=2)
         except Exception as e:
             print("Failed to send log:", e)
 
